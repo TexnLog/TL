@@ -21,7 +21,10 @@ public class DBManager {
    // Ερωτήματα Ανάκτησης
         private PreparedStatement readAllEmployees;
         private PreparedStatement readEmployee;
-     
+   
+   //Ερωτήματα διαγραφής
+        private PreparedStatement deleteEmployee; 
+        
     //Δημιουργεί μία insert που προσθέτει μία νέα καταχώρηση υπαλλήλου βάση δεδομένων
     //κάθε ? αντιστοιχεί σε ένα χαρακτηριστικό του υπαλλήλου
         insertEmployee = dBconnection.prepareStatement("INSERT INTO pcstorage_db.EMPLOYEE VALUES(?,?,?,?)");
@@ -30,6 +33,12 @@ public class DBManager {
         readAllEmployees = dBconnection.prepareStatement("SELECT * FROM pcstorage_db.EMPLOYEE");
         readEmployee = dBconnection.prepareStatement("SELECT * FROM pcstorage_db.EMPLOYEE" +
          " WHERE pcstorage_db.EMPLOYEE.PHONE = ?");
+        
+        // Διαγραφή Υπαλληλων από τη βάση δεδομένων
+        deleteEmployee = dBconnection.prepareStatement("DELETE FROM pcstorage_db.EMPLOYEE"
+                + " WHERE ERGASIA3.EMPLOYEE.PHONE = ?");
+
+        
         //ΠΡΟΣΩΠΙΚΟ
 
         //Μέθοδος για την εισαγωγή του προσωπικού στη ΒΔ
@@ -85,4 +94,14 @@ public class DBManager {
             return null;
         }
         
+        //Μέθοδος για τη διαγραφή ενός συγκεκριμένου υπαλλήλου
+        public void deleteEmployee(String phone) {
+
+                    try {
+                deleteEmployee.setString(1, phone);
+                deleteEmployee.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
