@@ -23,11 +23,12 @@ public class DBManager {
     	// Ερωτήματα Ανάκτησης
     private PreparedStatement readAllComputers;
     private PreparedStatement readComputer;
+    private PreparedStatement readFreeComputers;    
     private PreparedStatement readAllEmployees;
     private PreparedStatement readEmployee;
     private PreparedStatement readAllXrewshs;
     private PreparedStatement readXrewsh_ByComputer;
-    private PreparedStatement readFreeComputers;
+    private PreparedStatement readXrewsh_ByEmployee;    
 	
 		// Ερωτήματα διαγραφής
     private PreparedStatement deleteEmployee;
@@ -90,6 +91,12 @@ public class DBManager {
             deleteXrewsh = dBconnection.prepareStatement("DELETE FROM pcstorage_db.XREWSH "
                     									+ "WHERE pcstorage_db.XREWSH.SERIALNUMBER = ?");
 
+            readXrewsh_ByEmployee = dBconnection.prepareStatement("SELECT * "
+            													+ "FROM pcstorage_db.COMPUTER "
+            													+ "WHERE pcstorage_db.COMPUTER.SERIALNUMBER IN "
+            													+ "(SELECT pcstorage_db.XREWSH.SERIALNUMBER "
+            													+ " FROM pcstorage_db.XREWSH "
+            													+ " WHERE pcstorage_db.XREWSH.PHONE = ?)");            
             
         } catch (Exception exc) {
             System.out.println(exc);
@@ -287,5 +294,31 @@ public class DBManager {
 		    }//τέλος catch
 		}//τέλος μεθόδου
 
+	    //μέθοδος για την ανάκτηση όλων των υπολογιστών που έχει
+	    //χρεωθεί έναςσυγκεκριμένος υπάλληλος
+	    public ArrayList<Computer> readXrewsh_ByEmployee(String phone) {
+
+	        // ArrayList από χρεωμένους υπολογιστές
+	        ArrayList<Computer> xrewmeno = new ArrayList<Computer>();
+	        try {
+	            readXrewsh_ByEmployee.setString(1, phone);
+	            ResultSet rs = readXrewsh_ByEmployee.executeQuery();
+	            while(rs.next()){
+	                Computer p = new Computer(
+	                        rs.getString(1), rs.getString(2),
+	                        rs.getString(3), rs.getString(4),
+	                        rs.getString(5), rs.getInt(6),
+	                        rs.getInt(7), rs.getInt(8)
+	                        );
+	                xrewmeno.add(p);
+	            }
+	            return xrewmeno;//επιστρέφει το χρεωμένο υπολογιστή
+	        } catch (SQLException ex) {
+	            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+	        }
+	        return null;
+	    }
+	    
+		
 }//τέλος κλάσης
 
