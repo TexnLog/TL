@@ -16,11 +16,17 @@ private String database = "//localhost:1527/pcstorage_db"; // το όνομα της ΒΔ πο
 
     	//Ερωτήματα Εισαγωγής
     private PreparedStatement insertComputer;
-
+    private PreparedStatement insertXrewsh;
+    
        // Ερωτήματα Ανάκτησης
     private PreparedStatement readAllComputers;
     private PreparedStatement readComputer;
     private PreparedStatement readFreeComputers;
+    private PreparedStatement readAllXrewshs;
+    private PreparedStatement readXrewsh_ByComputer;   
+
+    //Ερωτήματα διαγραφής
+    private PreparedStatement deleteXrewsh;    
 
     public DBManager() {
         try {
@@ -46,8 +52,25 @@ private String database = "//localhost:1527/pcstorage_db"; // το όνομα της ΒΔ πο
                     										+ "FROM pcstorage_db.COMPUTER "
                     										+ "WHERE pcstorage_db.COMPUTER.SERIALNUMBER NOT IN "
                     											+ "(SELECT pcstorage_db.XREWSH.SERIALNUMBER "
-                    											+ "FROM pcstorage_db.XREWSH)");
+                     											+ " FROM pcstorage_db.XREWSH)");
 
+            //Εισαγωγή Χρεώσεων στη βάση δεδομένων
+            insertXrewsh = dBconnection.prepareStatement("INSERT INTO pcstorage_db.XREWSH "
+            											+ "VALUES(?,?)");
+
+            //Ανάκτηση χρεώσεων από τη βάση δεδομένων
+            	//Όλες τις χρεώσεις
+            readAllXrewshs = dBconnection.prepareStatement("SELECT *"
+            											+ " FROM pcstorage_db.XREWSH");
+            	//Ανα υπολογιστή
+            readXrewsh_ByComputer = dBconnection.prepareStatement("SELECT * "
+            													+ "FROM pcstorage_db.XREWSH "
+            													+ "WHERE pcstorage_db.XREWSH.SERIALNUMBER = ?");
+            
+            //Διαγραφή Χρεώσεων από τη βάση δεδομένων
+            deleteXrewsh = dBconnection.prepareStatement("DELETE FROM pcstorage_db.XREWSH "
+                    									+ "WHERE pcstorage_db.XREWSH.SERIALNUMBER = ?");
+            
         } catch (Exception exc) {
             System.out.println(exc);
         }
@@ -152,6 +175,30 @@ private String database = "//localhost:1527/pcstorage_db"; // το όνομα της ΒΔ πο
         return null;
     }
 
+    
+    //ΧΡΕΩΣΕΙΣ
+
+    //Μέθοδος για την αποθήκευση των χρεωμένων υπολογιστών στη ΒΔ
+    public void storeXrewsh(String phone, String serialNumber){
+        try {
+            insertXrewsh.setString(1, phone);
+            insertXrewsh.setString(2, serialNumber);
+            insertXrewsh.executeUpdate();
+        }//τέλος try
+        catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }//τέλος catch
+    }//τέλος μεθόδου storeXrewsh
+    
+    //μέθοδος για τη διαγραφή μιας χρέωσης
+    public void deleteXrewsh(String serialNumber) {
+        try {
+            deleteXrewsh.setString(1, serialNumber);
+            deleteXrewsh.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }//τέλος catch
+    }//τέλος μεθόδου
     
 }//τέλος κλάσης
 
