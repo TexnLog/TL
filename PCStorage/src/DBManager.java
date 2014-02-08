@@ -4,201 +4,321 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//κλάση DBManager για την επικοινωνία με τη βάση δεδομένων(ΒΔ)
+
+//ΞΊΞ»Ξ¬ΟƒΞ· DBManager Ξ³ΞΉΞ± Ο„Ξ·Ξ½ ΞµΟ€ΞΉΞΊΞΏΞΉΞ½Ο‰Ξ½Ξ―Ξ± ΞΌΞµ Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½(Ξ’Ξ”)
 public class DBManager {
-private String database = "//localhost:1527/pcstorage_db"; // το όνομα της ΒΔ που δημιουργήσαμε
+	private String database = "//localhost:1527/pcstorage_db"; // Ο„ΞΏ ΟΞ½ΞΏΞΌΞ± Ο„Ξ·Ο‚ Ξ’Ξ” Ο€ΞΏΟ… Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ®ΟƒΞ±ΞΌΞµ 
     private String user = "storage_mgr";
     private String password = "test123";
     private String driver = "org.apache.derby.jdbc.ClientDriver";
     private String connString = "jdbc:derby:";
-    private Connection dBconnection; //διαχειρίζεται τη σύνδεση με τη ΒΔ.
+    private Connection dBconnection; //Ξ΄ΞΉΞ±Ο‡ΞµΞΉΟΞ―Ξ¶ΞµΟ„Ξ±ΞΉ Ο„Ξ· ΟƒΟΞ½Ξ΄ΞµΟƒΞ· ΞΌΞµ Ο„Ξ· Ξ’Ξ”.
     private Statement statement;
-
-    	//Ερωτήματα Εισαγωγής
-    private PreparedStatement insertComputer;
-    private PreparedStatement insertXrewsh;
     
-       // Ερωτήματα Ανάκτησης
+		//Ξ•ΟΟ‰Ο„Ξ®ΞΌΞ±Ο„Ξ± Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®Ο‚
+    private PreparedStatement insertComputer;
+    private PreparedStatement insertEmployee;
+    private PreparedStatement insertXrewsh;   
+   
+    	// Ξ•ΟΟ‰Ο„Ξ®ΞΌΞ±Ο„Ξ± Ξ‘Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ·Ο‚
     private PreparedStatement readAllComputers;
     private PreparedStatement readComputer;
-    private PreparedStatement readFreeComputers;
+    private PreparedStatement readFreeComputers;    
+    private PreparedStatement readAllEmployees;
+    private PreparedStatement readEmployee;
     private PreparedStatement readAllXrewshs;
-    private PreparedStatement readXrewsh_ByComputer;   
-
-    //Ερωτήματα διαγραφής
-    private PreparedStatement deleteXrewsh;    
-
+    private PreparedStatement readXrewsh_ByComputer;
+    private PreparedStatement readXrewsh_ByEmployee;    
+	
+		// Ξ•ΟΟ‰Ο„Ξ®ΞΌΞ±Ο„Ξ± Ξ΄ΞΉΞ±Ξ³ΟΞ±Ο†Ξ®Ο‚
+    private PreparedStatement deleteEmployee;
+    private PreparedStatement deleteXrewsh;
+        
+    
     public DBManager() {
         try {
            
             Class.forName(driver);
-            // Σύνδεση με τη βάση δεδομένων
+            // Ξ£ΟΞ½Ξ΄ΞµΟƒΞ· ΞΌΞµ Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
             dBconnection = DriverManager.getConnection(connString + database, user, password);
             statement = dBconnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 
-            //Δημιουργεί μία insert που προσθέτει μία νέα καταχώρηση υπολογιστή στη βάση δεδομένων
-            // κάθε ? αντιστοιχεί σε ένα στοιχείο του υπολογιστή
+            //Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³ΞµΞ― ΞΌΞ―Ξ± insert Ο€ΞΏΟ… Ο€ΟΞΏΟƒΞΈΞ­Ο„ΞµΞΉ ΞΌΞ―Ξ± Ξ½Ξ­Ξ± ΞΊΞ±Ο„Ξ±Ο‡ΟΟΞ·ΟƒΞ· Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ® ΟƒΟ„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
+            // ΞΊΞ¬ΞΈΞµ ? Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΞµ Ξ­Ξ½Ξ± ΟƒΟ„ΞΏΞΉΟ‡ΞµΞ―ΞΏ Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
             insertComputer = dBconnection.prepareStatement("INSERT INTO pcstorage_db.COMPUTER "
-            											 + "VALUES(?,?,?,?,?,?,?,?)");
+            											  + "VALUES(?,?,?,?,?,?,?,?)");        	
 
-            //Ανάκτηση Υπολογιστών από τη βάση δεδομένων
+            //Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³ΞµΞ― ΞΌΞ―Ξ± insert Ο€ΞΏΟ… Ο€ΟΞΏΟƒΞΈΞ­Ο„ΞµΞΉ ΞΌΞ―Ξ± Ξ½Ξ­Ξ± ΞΊΞ±Ο„Ξ±Ο‡ΟΟΞ·ΟƒΞ· Ο…Ο€Ξ±Ξ»Ξ»Ξ®Ξ»ΞΏΟ… Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
+            //ΞΊΞ¬ΞΈΞµ ? Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΞµ Ξ­Ξ½Ξ± Ο‡Ξ±ΟΞ±ΞΊΟ„Ξ·ΟΞΉΟƒΟ„ΞΉΞΊΟ Ο„ΞΏΟ… Ο…Ο€Ξ±Ξ»Ξ»Ξ®Ξ»ΞΏΟ…
+            insertEmployee = dBconnection.prepareStatement("INSERT INTO pcstorage_db.EMPLOYEE VALUES(?,?,?,?)");
+            
+            //Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ® Ξ§ΟΞµΟΟƒΞµΟ‰Ξ½ ΟƒΟ„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
+            insertXrewsh = dBconnection.prepareStatement("INSERT INTO pcstorage_db.XREWSH VALUES(?,?)");            
+            
+            //Ξ‘Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· Ξ¥Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½ Ξ±Ο€Ο Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½          
             readAllComputers = dBconnection.prepareStatement("SELECT * FROM pcstorage_db.COMPUTER");
             readComputer = dBconnection.prepareStatement("SELECT * "
             											+ "FROM pcstorage_db.COMPUTER" 
-            											+" WHERE pcstorage_db.COMPUTER.SERIALNUMBER = ?");
-
-            //Ανάκτηση υπολογιστών που δεν είναι χρεωμένοι
+            											+" WHERE pcstorage_db.COMPUTER.SERIALNUMBER = ?");            
+            
+            //Ξ‘Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΞΌΟΞ½ΞΏ Ο„Ο‰Ξ½ Ξ΄ΞΉΞ±ΞΈΞ­ΟƒΞΉΞΌΟ‰Ξ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½
             readFreeComputers = dBconnection.prepareStatement("SELECT * "
-                    										+ "FROM pcstorage_db.COMPUTER "
-                    										+ "WHERE pcstorage_db.COMPUTER.SERIALNUMBER NOT IN "
-                    											+ "(SELECT pcstorage_db.XREWSH.SERIALNUMBER "
-                     											+ " FROM pcstorage_db.XREWSH)");
+					+ "FROM pcstorage_db.COMPUTER "
+					+ "WHERE pcstorage_db.COMPUTER.SERIALNUMBER NOT IN "
+						+ "(SELECT pcstorage_db.XREWSH.SERIALNUMBER "
+						+  "FROM pcstorage_db.XREWSH)");
+               
+            //Ξ‘Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· Ξ¥Ο€Ξ±Ξ»Ξ»Ξ·Ξ»Ξ»Ο‰Ξ½ Ξ±Ο€Ο Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
+            readAllEmployees = dBconnection.prepareStatement("SELECT * "
+            												+"FROM pcstorage_db.EMPLOYEE");
+   
+            readEmployee = dBconnection.prepareStatement("SELECT * "
+            											+"FROM pcstorage_db.EMPLOYEE" +
+            											" WHERE pcstorage_db.EMPLOYEE.PHONE = ?");
 
-            //Εισαγωγή Χρεώσεων στη βάση δεδομένων
-            insertXrewsh = dBconnection.prepareStatement("INSERT INTO pcstorage_db.XREWSH "
-            											+ "VALUES(?,?)");
-
-            //Ανάκτηση χρεώσεων από τη βάση δεδομένων
-            	//Όλες τις χρεώσεις
-            readAllXrewshs = dBconnection.prepareStatement("SELECT *"
-            											+ " FROM pcstorage_db.XREWSH");
-            	//Ανα υπολογιστή
-            readXrewsh_ByComputer = dBconnection.prepareStatement("SELECT * "
-            													+ "FROM pcstorage_db.XREWSH "
+            //Ξ‘Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· Ο‡ΟΞµΟΟƒΞµΟ‰Ξ½ Ξ±Ο€Ο Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
+            readAllXrewshs = dBconnection.prepareStatement("SELECT * "
+            											 + "FROM pcstorage_db.XREWSH");
+            
+            readXrewsh_ByComputer = dBconnection.prepareStatement("SELECT * FROM pcstorage_db.XREWSH "
             													+ "WHERE pcstorage_db.XREWSH.SERIALNUMBER = ?");
             
-            //Διαγραφή Χρεώσεων από τη βάση δεδομένων
+            // Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ¥Ο€Ξ±Ξ»Ξ»Ξ·Ξ»Ο‰Ξ½ Ξ±Ο€Ο Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
+            deleteEmployee = dBconnection.prepareStatement("DELETE FROM pcstorage_db.EMPLOYEE"
+            											+ " WHERE pcstorage_db.EMPLOYEE.PHONE = ?");
+
+            //Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ§ΟΞµΟΟƒΞµΟ‰Ξ½ Ξ±Ο€Ο Ο„Ξ· Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
             deleteXrewsh = dBconnection.prepareStatement("DELETE FROM pcstorage_db.XREWSH "
                     									+ "WHERE pcstorage_db.XREWSH.SERIALNUMBER = ?");
+
+            readXrewsh_ByEmployee = dBconnection.prepareStatement("SELECT * "
+            													+ "FROM pcstorage_db.COMPUTER "
+            													+ "WHERE pcstorage_db.COMPUTER.SERIALNUMBER IN "
+            													+ "(SELECT pcstorage_db.XREWSH.SERIALNUMBER "
+            													+ " FROM pcstorage_db.XREWSH "
+            													+ " WHERE pcstorage_db.XREWSH.PHONE = ?)");            
             
         } catch (Exception exc) {
             System.out.println(exc);
         }
-    }
+    }        
+        
+    // Ξ“ΞΉΞ± ΞΊΞ¬ΞΈΞµ ΞµΟΟΟ„Ξ·ΞΌΞ± Ο€ΞΏΟ… Ο€ΟΞΏΞµΟ„ΞΏΞΉΞΌΞ¬ΟƒΞ±ΞΌΞµ Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³ΞΏΟΞΌΞµ ΞΌΞ―Ξ± ΞΌΞ­ΞΈΞΏΞ΄ΞΏ
 
-    // Για κάθε ερώτημα που προετοιμάσαμε δημιουργούμε μία μέθοδο
+    //Ξ¥Ξ ΞΞ›ΞΞ“Ξ™Ξ£Ξ¤Ξ•Ξ£
 
-    //ΥΠΟΛΟΓΙΣΤΕΣ
+	    //ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„Ο‰Ξ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½ ΟƒΟ„Ξ· Ξ’Ξ”
+	    public void storeComputer(Computer P){
+	        try {
+	            //Ο„ΞΏ 1 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„ΞΏ serialNumber Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setString(1, P.getSerialNumber());
+	             //Ο„ΞΏ 2 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„Ξ·Ξ½ Etiketa Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setString(2, P.getEtiketa());
+	           //Ο„ΞΏ 3 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„ΞΏ model Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setString(3, P.getModel());
+	             //Ο„ΞΏ 4 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„ΞΏ perigrafi Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setString(4, P.getPerigrafi());
+	             //Ο„ΞΏ 5 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„ΞΏ typos Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setString(5, P.getTypos());
+	             //Ο„ΞΏ 6 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„Ξ· cpu Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setInt(6, P.getCpu());
+	             //Ο„ΞΏ 7 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„Ξ· ram Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setInt(7, P.getRam());
+	             //Ο„ΞΏ 8 Ξ±Ξ½Ο„ΞΉΟƒΟ„ΞΏΞΉΟ‡ΞµΞ― ΟƒΟ„ΞΏ disk Ο„ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	            insertComputer.setInt(8, P.getDisk());
+	
+	            insertComputer.executeUpdate();
+	        } catch (SQLException ex) {
+	            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+	        }
+	    }
+	
+	    //ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½
+	    public ArrayList<Computer> readAllComputers() {
+	
+	        //Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ο ArrayList Ξ±Ο€Ο computers
+	                ArrayList<Computer> computers = new ArrayList<Computer>();
+	        try {
+	
+	            ResultSet rs = readAllComputers.executeQuery();
+	            while(rs.next()){
+	                Computer p = new Computer(
+	                        rs.getString(1), rs.getString(2),
+	                        rs.getString(3), rs.getString(4),
+	                        rs.getString(5), rs.getInt(6),
+	                        rs.getInt(7), rs.getInt(8)
+	                        );
+	                computers.add(p);
+	            }//Ο„Ξ­Ξ»ΞΏΟ‚ while
+	            return computers;
+	        } //  Ο„Ξ­Ξ»ΞΏΟ‚ try
+	        catch (SQLException ex) {
+	            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+	        }//Ο„Ξ­Ξ»ΞΏΟ‚ catch
+	        return null;
+	    }//Ο„Ξ­Ξ»ΞΏΟ‚ ΞΌΞµΞΈΟΞ΄ΞΏΟ…
+	
+	    //ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΞµΞ½ΟΟ‚ ΟƒΟ…Ξ³ΞΊΞµΞΊΟΞΉΞΌΞ­Ξ½ΞΏΟ… Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	    public Computer readComputer(String serialNumber) {
+	        try {
+	            readComputer.setString(1, serialNumber);
+	
+	            ResultSet rs = readComputer.executeQuery();
+	            if(rs.next()){
+	                Computer p = new Computer(
+	                        rs.getString(1), rs.getString(2),
+	                        rs.getString(3), rs.getString(4),
+	                        rs.getString(5), rs.getInt(6),
+	                        rs.getInt(7), rs.getInt(8)
+	                        );
+	                return p;
+	            }//Ο„Ξ­Ξ»ΞΏΟ‚ if
+	        } catch (SQLException ex) {
+	            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+	        }//Ο„Ξ­Ξ»ΞΏΟ‚ catch
+	        return null;
+	    }//Ο„Ξ­Ξ»ΞΏΟ‚ ΞΌΞµΞΈΟΞ΄ΞΏΟ…   
+	    
+		//ΞΌΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ξ΄ΞΉΞ±ΞΈΞ­ΟƒΞΉΞΌΟ‰Ξ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½
+		public ArrayList<Computer> readFreeComputers() {
+		    //Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± ArrayList  ΞΌΞµ Ο„ΞΏΟ…Ο‚ Ξ΄ΞΉΞ±ΞΈΞ­ΟƒΞΉΞΌΞΏΟ…Ο‚ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ­Ο‚
+		    ArrayList<Computer> free = new ArrayList<Computer>();
+		
+		            try {
+		        ResultSet rs = readFreeComputers.executeQuery();
+		        while(rs.next()){
+		            Computer p = new Computer(
+		                    rs.getString(1), rs.getString(2),
+		                    rs.getString(3), rs.getString(4),
+		                    rs.getString(5), rs.getInt(6),
+		                    rs.getInt(7), rs.getInt(8)
+		                    );
+		            free.add(p);//Ο€ΟΞΏΟƒΞΈΞ­Ο„ΞµΞΉ Ο„ΞΏΟ…Ο‚ Ξ΄ΞΉΞ±ΞΈΞ­ΟƒΞΉΞΌΞΏΟ…Ο‚ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ­Ο‚
+		        }
+		        return free;//ΞµΟ€ΞΉΟƒΟ„ΟΞ­Ο†ΞµΞΉ Ο„ΞΏΟ…Ο‚ Ξ΄ΞΉΞ±ΞΈΞ­ΟƒΞΉΞΌΞΏΟ…Ο‚ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ­Ο‚
+		    } catch (SQLException ex) {
+		        Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+		    }//Ο„Ξ­Ξ»ΞΏΟ‚ catch
+		    return null;
+		}
+	
+	
+    //Ξ Ξ΅ΞΞ£Ξ©Ξ Ξ™ΞΞ
 
-    //Μέθοδος για την αποθήκευση των υπολογιστών στη ΒΔ
-    public void storeComputer(Computer P){
-        try {
-            //το 1 αντιστοιχεί στο serialNumber του υπολογιστή
-            insertComputer.setString(1, P.getSerialNumber());
-             //το 2 αντιστοιχεί στην Etiketa του υπολογιστή
-            insertComputer.setString(2, P.getEtiketa());
-           //το 3 αντιστοιχεί στο model του υπολογιστή
-            insertComputer.setString(3, P.getModel());
-             //το 4 αντιστοιχεί στο perigrafi του υπολογιστή
-            insertComputer.setString(4, P.getPerigrafi());
-             //το 5 αντιστοιχεί στο typos του υπολογιστή
-            insertComputer.setString(5, P.getTypos());
-             //το 6 αντιστοιχεί στη cpu του υπολογιστή
-            insertComputer.setInt(6, P.getCpu());
-             //το 7 αντιστοιχεί στη ram του υπολογιστή
-            insertComputer.setInt(7, P.getRam());
-             //το 8 αντιστοιχεί στο disk του υπολογιστή
-            insertComputer.setInt(8, P.getDisk());
+        //ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ ΞµΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ® Ο„ΞΏΟ… Ο€ΟΞΏΟƒΟ‰Ο€ΞΉΞΊΞΏΟ ΟƒΟ„Ξ· Ξ’Ξ”
+        public void storeEmployee(Employee k){
+            try {
+                insertEmployee.setString(1, k.getPhone());
+                insertEmployee.setString(2, k.getName());
+                insertEmployee.setString(3, k.getEponymo());
+                insertEmployee.setString(4, k.getEmail());
 
-            insertComputer.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    //Μέθοδος για την ανάκτηση όλων των υπολογιστών
-    public ArrayList<Computer> readAllComputers() {
-
-        //δημιουργώ ArrayList από computers
-                ArrayList<Computer> computers = new ArrayList<Computer>();
-        try {
-
-            ResultSet rs = readAllComputers.executeQuery();
-            while(rs.next()){
-                Computer p = new Computer(
-                        rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getInt(6),
-                        rs.getInt(7), rs.getInt(8)
-                        );
-                computers.add(p);
-            }//τέλος while
-            return computers;
-        } //  τέλος try
-        catch (SQLException ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }//τέλος catch
-        return null;
-    }//τέλος μεθόδου
-
-    //Μέθοδος για την ανάκτηση ενός συγκεκριμένου υπολογιστή
-    public Computer readComputer(String serialNumber) {
-        try {
-            readComputer.setString(1, serialNumber);
-
-            ResultSet rs = readComputer.executeQuery();
-            if(rs.next()){
-                Computer p = new Computer(
-                        rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getInt(6),
-                        rs.getInt(7), rs.getInt(8)
-                        );
-                return p;
-            }//τέλος if
-        } catch (SQLException ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }//τέλος catch
-        return null;
-    }//τέλος μεθόδου
-
-    //μέθοδος για την ανάκτηση όλων των διαθέσιμων υπολογιστών
-    public ArrayList<Computer> readFreeComputers() {
-        //δημιουργία ArrayList  με τους διαθέσιμους υπολογιστές
-        ArrayList<Computer> free = new ArrayList<Computer>();
-
-                try {
-            ResultSet rs = readFreeComputers.executeQuery();
-            while(rs.next()){
-                Computer p = new Computer(
-                        rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getInt(6),
-                        rs.getInt(7), rs.getInt(8)
-                        );
-                free.add(p);//προσθέτει τους διαθέσιμους υπολογιστές
+               insertEmployee.executeUpdate();
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
             }
-            return free;//επιστρέφει τους διαθέσιμους υπολογιστές
-        } catch (SQLException ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }//τέλος catch
-        return null;
-    }
+        }    
+        //ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ο…Ο€Ξ±Ξ»Ξ»Ξ®Ξ»Ο‰Ξ½
+        public ArrayList<Employee> readAllEmployees() {
 
-    
-    //ΧΡΕΩΣΕΙΣ
+              //Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ο ArrayList Ξ±Ο€Ο employees
+            ArrayList<Employee> employees = new ArrayList<Employee>();
 
-    //Μέθοδος για την αποθήκευση των χρεωμένων υπολογιστών στη ΒΔ
-    public void storeXrewsh(String phone, String serialNumber){
-        try {
-            insertXrewsh.setString(1, phone);
-            insertXrewsh.setString(2, serialNumber);
-            insertXrewsh.executeUpdate();
-        }//τέλος try
-        catch (SQLException ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }//τέλος catch
-    }//τέλος μεθόδου storeXrewsh
+            try {
+                ResultSet rs = readAllEmployees.executeQuery();
+                while(rs.next()){
+                    Employee k = new Employee(
+                            rs.getString(2), rs.getString(3),
+                             rs.getString(1), rs.getString(4)
+                            );
+                    employees.add(k);
+                }
+                return employees;
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }
+
+        //ΞΌΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΞµΞ½ΟΟ‚ ΟƒΟ…Ξ³ΞΊΞµΞΊΟΞΉΞΌΞ­Ξ½ΞΏΟ… Ο…Ο€Ξ±Ξ»Ξ»Ξ®Ξ»ΞΏΟ…
+        public Employee readEmployee(String phone) {//Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ„ΞΏ Ο€ΟΟ‰Ο„ΞµΟΞΏΞ½ ΞΊΞ»ΞµΞΉΞ΄Ξ― phone
+            try {
+                readEmployee.setString(1, phone);
+                ResultSet rs = readEmployee.executeQuery();
+                if(rs.next()){
+                     Employee k = new Employee(
+                            rs.getString(2), rs.getString(3),
+                            rs.getString(1), rs.getString(4)
+                            );
+                    return k;
+                }//Ο„Ξ­Ξ»ΞΏΟ‚ if
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }
+        
+        //ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ· Ξ΄ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΞ½ΟΟ‚ ΟƒΟ…Ξ³ΞΊΞµΞΊΟΞΉΞΌΞ­Ξ½ΞΏΟ… Ο…Ο€Ξ±Ξ»Ξ»Ξ®Ξ»ΞΏΟ…
+        public void deleteEmployee(String phone) {
+
+                    try {
+                deleteEmployee.setString(1, phone);
+                deleteEmployee.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     
-    //μέθοδος για τη διαγραφή μιας χρέωσης
-    public void deleteXrewsh(String serialNumber) {
-        try {
-            deleteXrewsh.setString(1, serialNumber);
-            deleteXrewsh.execute();
-        } catch (SQLException ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }//τέλος catch
-    }//τέλος μεθόδου
-    
-}//τέλος κλάσης
+
+	//Ξ§Ξ΅Ξ•Ξ©Ξ£Ξ•Ξ™Ξ£
+	
+		//ΞΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„Ο‰Ξ½ Ο‡ΟΞµΟ‰ΞΌΞ­Ξ½Ο‰Ξ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½ ΟƒΟ„Ξ· Ξ’Ξ”
+		public void storeXrewsh(String phone, String serialNumber){
+		    try {
+		        insertXrewsh.setString(1, phone);
+		        insertXrewsh.setString(2, serialNumber);
+		        insertXrewsh.executeUpdate();
+		    }//Ο„Ξ­Ξ»ΞΏΟ‚ try
+		    catch (SQLException ex) {
+		        Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+		    }//Ο„Ξ­Ξ»ΞΏΟ‚ catch
+		}//Ο„Ξ­Ξ»ΞΏΟ‚ ΞΌΞµΞΈΟΞ΄ΞΏΟ… storeXrewsh
+		
+		//ΞΌΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ· Ξ΄ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞΌΞΉΞ±Ο‚ Ο‡ΟΞ­Ο‰ΟƒΞ·Ο‚
+		public void deleteXrewsh(String serialNumber) {
+		    try {
+		        deleteXrewsh.setString(1, serialNumber);
+		        deleteXrewsh.execute();
+		    } catch (SQLException ex) {
+		        Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+		    }//Ο„Ξ­Ξ»ΞΏΟ‚ catch
+		}//Ο„Ξ­Ξ»ΞΏΟ‚ ΞΌΞµΞΈΟΞ΄ΞΏΟ…
+
+	    //ΞΌΞ­ΞΈΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΟΞ½ Ο€ΞΏΟ… Ξ­Ο‡ΞµΞΉ
+	    //Ο‡ΟΞµΟ‰ΞΈΞµΞ― Ξ­Ξ½Ξ±Ο‚ΟƒΟ…Ξ³ΞΊΞµΞΊΟΞΉΞΌΞ­Ξ½ΞΏΟ‚ Ο…Ο€Ξ¬Ξ»Ξ»Ξ·Ξ»ΞΏΟ‚
+	    public ArrayList<Computer> readXrewsh_ByEmployee(String phone) {
+
+	        // ArrayList Ξ±Ο€Ο Ο‡ΟΞµΟ‰ΞΌΞ­Ξ½ΞΏΟ…Ο‚ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ­Ο‚
+	        ArrayList<Computer> xrewmeno = new ArrayList<Computer>();
+	        try {
+	            readXrewsh_ByEmployee.setString(1, phone);
+	            ResultSet rs = readXrewsh_ByEmployee.executeQuery();
+	            while(rs.next()){
+	                Computer p = new Computer(
+	                        rs.getString(1), rs.getString(2),
+	                        rs.getString(3), rs.getString(4),
+	                        rs.getString(5), rs.getInt(6),
+	                        rs.getInt(7), rs.getInt(8)
+	                        );
+	                xrewmeno.add(p);
+	            }
+	            return xrewmeno;//ΞµΟ€ΞΉΟƒΟ„ΟΞ­Ο†ΞµΞΉ Ο„ΞΏ Ο‡ΟΞµΟ‰ΞΌΞ­Ξ½ΞΏ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ®
+	        } catch (SQLException ex) {
+	            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+	        }
+	        return null;
+	    }
+	    
+		
+}//Ο„Ξ­Ξ»ΞΏΟ‚ ΞΊΞ»Ξ¬ΟƒΞ·Ο‚
 
