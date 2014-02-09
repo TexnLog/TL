@@ -236,4 +236,35 @@ public class EmployeeForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameActionPerformed
     
+    //χειρίζεται την κλήση όταν γίνει κλικ στο jButton1
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      //ανάγνωση των στοιχείων που εισήγαγε ο χρήστης στα πλαίσια κειμένου
+        String bname = name.getText();
+        String beponymo = eponymo.getText();
+        String bphone = phone.getText();
+        String bemail = email.getText();
+        int thesi;
+
+                //ελέγχουμε αν ο χρήστης άφησε κάποιο από τα πεδία κενό
+        if(bname.isEmpty() || beponymo.isEmpty()|| bphone.isEmpty() || bemail.isEmpty())
+
+            //εμφανιζουμε μήνυμα για να συμπληρώσει όλα τα πεδία
+            JOptionPane.showMessageDialog(this, "Συμπληρώστε όλα τα στοιχεία");
+        //αλλιώς αν συμπλήρωσε όλα τα πεδία
+        else{
+            //δημιουργία νέου υπαλλήλου
+            Employee k = new Employee(bname, beponymo, bphone, bemail);
+            //αποθήκευση του υπαλλήλου στη βάση
+            db.storeEmployee(k);
+            //εμφάνιση του υπαλλήλου στη λίστα
+            if(employees == null)
+                  thesi = 0;
+            else
+                thesi = employees.size();
+            model.add(thesi, k.toString());
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+    
+    
 }
