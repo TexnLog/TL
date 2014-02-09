@@ -23,20 +23,31 @@
 	    private javax.swing.JScrollPane jScrollPane3;
 	    // End of variables declaration//GEN-END:variables
 	    
-	    //δημιουργία λίστας με όλους τους υπαλλήλους
-	    ArrayList<Employee> employees;
-	    
-	    //δημιουργία λίστας με τους διαθέσιμους υπολογιστές
-	    ArrayList<Computer> free;
+	    //Anafores se alles klaseis
+	    ArrayList<Employee> employees; //δημιουργία λίστας με όλους τους υπαλλήλους
+	    ArrayList<Computer> free; //δημιουργία λίστας με τους διαθέσιμους υπολογιστές
+	    ArrayList<Computer> xrewmeno; //δημιουργία λίστας με τους δεσμευμένους υπολογιστές
+	    private DBManager db; //αναφορά στην κλάση σύνδεσης με τη βάση δεδομένων
+	    private MainForm parent; //αναφορά στη αρχική φόρμα
 
-	    //δημιουργία λίστας με τους δεσμευμένους υπολογιστές
-	    ArrayList<Computer> xrewmeno;
+	    public XrewshForm(MainForm parent, DBManager db) {
+	        int i;
+	        initComponents();
+	        this.db = db;
+	        this.parent = parent;
 
-	    //αναφορά στην κλάση σύνδεσης με τη βάση δεδομένων
-	    private DBManager db;
+	        //ανάγνωση όλων των υπαλλήλων από τη ΒΔ και εμφάνιση τους στη λίστα
+	        employees = db.readAllEmployees();
+	        if(employees != null)
+	            for(i = 0; i < employees.size(); i++)
+	                employeemodel.add(i, employees.get(i).toString());
+	        //ανάγνωση όλων των διαθέσιμων υπολογιστών από τη ΒΔ και εμφάνιση τους στη λίστα
+	        free = db.readFreeComputers();
+	        if(free != null)
+	            for(i = 0; i < free.size(); i++)
+	                freemodel.add(i, free.get(i).toString());
+	    }//τέλος μεθόδου XrewshForm
 
-	    //αναφορά στη αρχική φόρμα
-	    private MainForm parent;
 	    
 		 /** This method is called from within the constructor to
 	     * initialize the form.
