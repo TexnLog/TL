@@ -23,6 +23,21 @@
 	    private javax.swing.JScrollPane jScrollPane3;
 	    // End of variables declaration//GEN-END:variables
 	    
+	    //δημιουργία λίστας με όλους τους υπαλλήλους
+	    ArrayList<Employee> employees;
+	    
+	    //δημιουργία λίστας με τους διαθέσιμους υπολογιστές
+	    ArrayList<Computer> free;
+
+	    //δημιουργία λίστας με τους δεσμευμένους υπολογιστές
+	    ArrayList<Computer> xrewmeno;
+
+	    //αναφορά στην κλάση σύνδεσης με τη βάση δεδομένων
+	    private DBManager db;
+
+	    //αναφορά στη αρχική φόρμα
+	    private MainForm parent;
+	    
 		 /** This method is called from within the constructor to
 	     * initialize the form.
 	     * WARNING: Do NOT modify this code. The content of this method is
@@ -51,7 +66,7 @@
 	        jPanel1.setBackground(new java.awt.Color(255, 204, 102));
 
 	        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
-	        jLabel1.setText("Χρέωση/Αποδέσμευση Υπολογιστών σε Προσωπικό");
+	        jLabel1.setText("Î§Ï�Î­Ï‰ÏƒÎ·/Î‘Ï€Î¿Î´Î­ÏƒÎ¼ÎµÏ…ÏƒÎ· Î¥Ï€Î¿Î»Î¿Î³Î¹ÏƒÏ„ÏŽÎ½ ÏƒÎµ Î Ï�Î¿ÏƒÏ‰Ï€Î¹ÎºÏŒ");
 
 	        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 	        jPanel1.setLayout(jPanel1Layout);
@@ -78,25 +93,25 @@
 
 	        jScrollPane3.setViewportView(jList3);
 
-	        jLabel2.setText("Διαθέσιμοι Υπολογιστές");
+	        jLabel2.setText("Î”Î¹Î±Î¸Î­ÏƒÎ¹Î¼Î¿Î¹ Î¥Ï€Î¿Î»Î¿Î³Î¹ÏƒÏ„Î­Ï‚");
 
-	        jLabel3.setText("Χρεωμένοι Υπολογιστές");
+	        jLabel3.setText("Î§Ï�ÎµÏ‰Î¼Î­Î½Î¿Î¹ Î¥Ï€Î¿Î»Î¿Î³Î¹ÏƒÏ„Î­Ï‚");
 
-	        jButton1.setText("Χρέωση->");
+	        jButton1.setText("Î§Ï�Î­Ï‰ÏƒÎ·->");
 	        jButton1.addActionListener(new java.awt.event.ActionListener() {
 	            public void actionPerformed(java.awt.event.ActionEvent evt) {
 	                jButton1ActionPerformed(evt);
 	            }
 	        });
 
-	        jButton2.setText("<-Αποδέσμευση");
+	        jButton2.setText("<-Î‘Ï€Î¿Î´Î­ÏƒÎ¼ÎµÏ…ÏƒÎ·");
 	        jButton2.addActionListener(new java.awt.event.ActionListener() {
 	            public void actionPerformed(java.awt.event.ActionEvent evt) {
 	                jButton2ActionPerformed(evt);
 	            }
 	        });
 
-	        jButton3.setText("Επιστροφή");
+	        jButton3.setText("Î•Ï€Î¹ÏƒÏ„Ï�Î¿Ï†Î®");
 	        jButton3.addActionListener(new java.awt.event.ActionListener() {
 	            public void actionPerformed(java.awt.event.ActionEvent evt) {
 	                jButton3ActionPerformed(evt);
