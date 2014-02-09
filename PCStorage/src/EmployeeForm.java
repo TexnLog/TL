@@ -302,5 +302,17 @@ public class EmployeeForm extends javax.swing.JFrame {
 
    }//GEN-LAST:event_jButton2ActionPerformed
 
-   
+   //χειρίζεται την κλήση όταν γίνει κλικ στο jButton3
+   private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+       //βρίσκω τον επιλεγμένο υπάλληλο
+       int selected = jList1.getSelectedIndex();
+       
+           //διαγραφή του υπαλλήλου από τη ΒΔ
+           db.deleteEmployee(employees.get(selected).getPhone());
+           //διαγραφή από τη λίστα
+           model.remove(selected);
+       
+   }//GEN-LAST:event_jButton3ActionPerformed
+
 }
