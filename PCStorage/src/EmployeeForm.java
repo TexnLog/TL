@@ -266,5 +266,41 @@ public class EmployeeForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
     
-    
+    //χειρίζεται την κλήση όταν γίνει κλικ στο jButton2
+   private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+       //βρίσκω τον επιλεγμένο υπάλληλο
+       int selected = jList1.getSelectedIndex();
+       //ανάγνωση των στοιχείων που έβαλε ο χρήστης στα πλαίσια κειμένου
+       String bname = name.getText();
+       String beponymo = eponymo.getText();
+       String bphone = phone.getText();
+       String bemail = email.getText();
+
+       // Ελέγχος αν ο χρήστης άφησε κάποιο από τα πεδία κενό
+       if(bname.isEmpty() || beponymo.isEmpty() || bphone.isEmpty() || bemail.isEmpty())
+            //εμφανιζουμε μήνυμα για να συμπληρώσει όλα τα στοιχεία
+           JOptionPane.showMessageDialog(this, "Συμπληρώστε όλα τα στοιχεία");
+       //αν δεν έχει επιλεγεί υπάλληλος
+       else if(selected == -1)
+           //εμφανιζουμε μήνυμα για να επιλέξει υπάλληλο ο χρήστης
+           JOptionPane.showMessageDialog(this, "Επιλέξτε  υπάλληλο");
+       //αλλιώς αν συμπλήρωσε όλα τα πεδία
+       else
+       {
+           //δημιουργία νέου υπαλλήλου
+           Employee k = new Employee(bname, beponymo, bphone, bemail);
+           //Διαγραφή του υπαλλήλου
+           db.deleteEmployee(employees.get(selected).getPhone());
+           //Αποθήκευση του υπαλλήλου
+           db.storeEmployee(k);
+           //ενημέρωση της λίστας με τους υπαλλήλους
+           employees.set(selected, k);
+           //ανανέωση της λίστας
+           model.set(selected, k.toString());
+       }
+
+   }//GEN-LAST:event_jButton2ActionPerformed
+
+   
 }
