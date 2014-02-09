@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 //κλάση DBManager για την επικοινωνία με τη βάση δεδομένων(ΒΔ)
 public class DBManager {
-	private String database = "//localhost:1527/pcstorage_db"; // το όνομα της ΒΔ που δημιουργήσαμε 
+	private String database = "//localhost:3306/pcstorage_db"; // το όνομα της ΒΔ που δημιουργήσαμε 
     private String user = "storage_mgr";
     private String password = "test123";
     private String driver = "org.apache.derby.jdbc.ClientDriver";
