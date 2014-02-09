@@ -7,11 +7,11 @@ import java.util.logging.Logger;
 
 //κλάση DBManager για την επικοινωνία με τη βάση δεδομένων(ΒΔ)
 public class DBManager {
-	private String database = "//localhost:3306/pcstorage_db"; // το όνομα της ΒΔ που δημιουργήσαμε 
+	private String database = "//192.168.1.3:3306/pcstorage_db"; // το όνομα της ΒΔ που δημιουργήσαμε 
     private String user = "storage_mgr";
     private String password = "test123";
-    private String driver = "org.apache.derby.jdbc.ClientDriver";
-    private String connString = "jdbc:derby:";
+    private String driver = "com.mysql.jdbc.Driver";
+    private String connString = "jdbc:mysql:";
     private Connection dBconnection; //διαχειρίζεται τη σύνδεση με τη ΒΔ.
     private Statement statement;
     
@@ -38,8 +38,25 @@ public class DBManager {
     public DBManager() {
         try {
            
-            Class.forName(driver);
-            // Σύνδεση με τη βάση δεδομένων
+        	//register Driver
+//        	Class.forName(driver);
+        	try {
+        		   Class.forName(driver).newInstance();
+        		}
+        		catch(ClassNotFoundException ex) {
+        		   System.out.println("Error: unable to load driver class!");
+        		   System.exit(1);
+        		}
+        		catch(IllegalAccessException ex) {
+        		   System.out.println("Error: access problem while loading!");
+        		   System.exit(2);
+        		}
+        		catch(InstantiationException ex) {
+        		   System.out.println("Error: unable to instantiate driver!");
+        		}
+        	
+        	
+        	// Σύνδεση με τη βάση δεδομένων
             dBconnection = DriverManager.getConnection(connString + database, user, password);
             statement = dBconnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 
@@ -98,6 +115,7 @@ public class DBManager {
             													+ " FROM pcstorage_db.XREWSH "
             													+ " WHERE pcstorage_db.XREWSH.PHONE = ?)");            
             
+
         } catch (Exception exc) {
             System.out.println(exc);
         }
