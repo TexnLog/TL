@@ -173,4 +173,47 @@
 
 	        pack();
 	    }// </editor-fold>//GEN-END:initComponents
+	    
+	    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+	        // TODO add your handling code here:
+	        int i;
+	        //βρίσκω τον επιλεγμένο υπάλληλο
+	        int selected = jList1.getSelectedIndex();
+	        //ανάγνωση των χρεωμένων υπολογιστών στο συγκεκριμένο υπάλληλο
+	        xrewmeno = db.readXrewsh_ByEmployee(employees.get(selected).getPhone());
+	        //διαγράφει από τη λίστα όλους τους υπολογιστές
+	        xrewmenomodel.removeAllElements();
+	        //Προσθέτει στη λίστα τους υπολογιστές του υπαλλήλου
+	        if(xrewmeno != null)
+	            for(i = 0; i < xrewmeno.size(); i++)
+	                xrewmenomodel.add(i, xrewmeno.get(i).toString());
+
+	    }//GEN-LAST:event_jList1ValueChanged
+
+	    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+	        // TODO add your handling code here:
+	        //βρίσκει τον επιλεγμένο υπάλληλο
+	        int selectedEmployee = jList1.getSelectedIndex();
+	        //βρίσκει επιλεγμένο διαθέσιμο υπολογιστή
+	        int selectedFreeComputer = jList2.getSelectedIndex();
+	        int thesi;
+	        {
+	            //αποθήκευση της χρέωσης
+	            db.storeXrewsh(employees.get(selectedEmployee).getPhone(), free.get(selectedFreeComputer).getSerialNumber());
+	            //προσθήκη του υπολογιστή στη λίστα του υπαλλήλου
+	            employees.get(selectedEmployee).addExoplismos(free.get(selectedFreeComputer));
+	            //βρίσκουμε την τελευταία θέση των χρεωμένων υπολογιστών
+	            thesi = xrewmenomodel.size();
+	            if(xrewmenomodel == null)
+	                thesi = 0;
+	            //προσθέτουμε στη λίστα με τους χρεωμένους υπολογιστές τον υπολογιστή αυτό
+	            xrewmenomodel.add(thesi, free.get(selectedFreeComputer).toString());
+	            //προσθέτουμε στους χρεωμένους υπολογιστές τον υπολογιστή αυτό
+	            xrewmeno.add(free.get(selectedFreeComputer));
+	            //διαγράφουμε τον υπολογιστή από τη λίστα με τους διαθέσιμους υπολογιστές
+	            free.remove(free.get(selectedFreeComputer));
+	            freemodel.remove(selectedFreeComputer);
+	           }
+
+	    }//GEN-LAST:event_jButton1ActionPerformed
 	}
