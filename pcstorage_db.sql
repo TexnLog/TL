@@ -16,13 +16,17 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Create Database: `pcstorage_db` abd user storage_mgr
---
-
+--	
+-- Create Database: `pcstorage_db`
 CREATE database pcstorage_db;
-GRANT usage on *.* to storage_mgr@localhost identified by 'test123';
-GRANT all privileges on pcstorage_db.* to storage_mgr@localhost;
+
+-- add users storage_mgr to pcstorage_db
+CREATE USER storage_mgr@localhost IDENTIFIED BY 'test123';
+GRANT ALL PRIVILEGES ON pcstorage_db.* to storage_mgr@localhost;
+CREATE USER 'storage_mgr'@'%' IDENTIFIED BY 'test123';
+GRANT ALL PRIVILEGES ON pcstorage_db.* to 'storage_mgr'@'%';
+
+-- need to edit 'my.cnf' the 'bind=IP' line if you want to access MySql DB remotely
 
 -- --------------------------------------------------------
 
