@@ -315,4 +315,15 @@ public class EmployeeForm extends javax.swing.JFrame {
        
    }//GEN-LAST:event_jButton3ActionPerformed
 
+   //χειρίζεται την κλήση όταν γίνει κλικ στο jButton4
+   private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+       // TODO add your handling code here:
+       //Ενεργοποίησε την αρχική φόρμα
+       parent.setEnabled(true);
+       //Απελευθέρωσε την τρέχουσα φόρμα
+       dispose();
+
+   }//GEN-LAST:event_jButton4ActionPerformed
+   
+   
 }
