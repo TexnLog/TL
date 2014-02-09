@@ -154,4 +154,12 @@ public class MainForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton2ActionPerformed
     
+    //χειρίζεται την κλήση όταν γίνει κλικ στο jButton3
+   private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+       System.exit(0);//έξοδος από την εφαρμογή
+
+   }//GEN-LAST:event_jButton3ActionPerformed
+   
+    
 }
