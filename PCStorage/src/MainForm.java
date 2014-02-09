@@ -127,4 +127,19 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+//Ενέργειες - Διασυνδέσεις
+    
+    //χειρίζεται την κλήση όταν γίνει κλικ στο jButton1
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        // Κάθε φορά για λόγους απλότητας δημιουργούμε νέα φόρμα
+        emf= new EmployeeForm(this, db);
+        //Απενεργοποίηση της αρχική φόρμας
+        this.setEnabled(false);
+        //Εμφανίζουμε τη νέα φόρμα
+        emf.setVisible(true);
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+    
 }
