@@ -216,4 +216,36 @@
 	           }
 
 	    }//GEN-LAST:event_jButton1ActionPerformed
+	    
+	    //χειρίζεται την κλήση όταν γίνει κλικ στο jButton2
+	    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+	        // TODO add your handling code here:
+	        //Επιλεγμένος υπολογιστής
+	        int selected = jList3.getSelectedIndex();
+	        //Επιλεγμένος υπαλληλος
+	        int selectedEmployee = jList1.getSelectedIndex();
+	        int thesi;
+
+	        //αν δεν έχει επιλεγεί κάποιος υπολογιστής
+	        if(selected == -1)
+	         // εμφανιζουμε μήνυμα για να επιλέξει έναν δεσμευμένο υπολογιστή από τη λίστα ο χρήστης
+	            JOptionPane.showMessageDialog(this, "Επιλέξτε ένα δεσμευμένο υπολογιστή από την αντίστοιχη λίστα");
+	        //αλλιώς αν έχει επιλεγεί υπολογιστή αποδεσμεύεται
+	        else{
+	            //διαγραφή της χρέωσης από τη ΒΔ
+	            db.deleteXrewsh(xrewmeno.get(selected).getSerialNumber());
+	            //διαγραφή του υπολογιστή από τη λίστα του υπαλλήλου
+	            employees.get(selectedEmployee).removeExoplismos(xrewmeno.get(selected));
+	            //διαγραφή της χρέωσης από τη λίστα
+	            xrewmenomodel.remove(selected);
+	                    thesi = freemodel.size();
+	            if(freemodel == null)
+	                thesi = 0;
+	            //προσθήκη του υπολογιστή στη λίστα με τους διαθέσιμους υπολογιστές
+	            freemodel.add(thesi, xrewmeno.get(selected).toString());
+	            //διαγραφή της χρέωσης από τη λίστα
+	            xrewmeno.remove(selected);
+	        }
+
+	    }//GEN-LAST:event_jButton2ActionPerformed
 	}
