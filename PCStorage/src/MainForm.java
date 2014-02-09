@@ -128,7 +128,7 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
-//Ενέργειες - Διασυνδέσεις
+//ENEGREIES - DIASYNDESEIS
     
     //χειρίζεται την κλήση όταν γίνει κλικ στο jButton1
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -141,5 +141,17 @@ public class MainForm extends javax.swing.JFrame {
         emf.setVisible(true);
 
     }//GEN-LAST:event_jButton1ActionPerformed
+    
+    //χειρίζεται την κλήση όταν γίνει κλικ στο jButton2
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        // Κάθε φορά για λόγους απλότητας δημιουργούμε νέα φόρμα
+        xr= new XrewshForm(this, db);
+        //Απενεργοποίηση της αρχική φόρμας
+        this.setEnabled(false);
+        //Εμφανίζουμε τη νέα φόρμα
+        xr.setVisible(true);
+
+    }//GEN-LAST:event_jButton2ActionPerformed
     
 }
